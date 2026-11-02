@@ -146,42 +146,6 @@ Thông qua việc triển khai và kiểm tra các mô hình Active/Standby, Act
 - Đánh giá khả năng chuyển hướng truy vấn sang Data Center khác khi địa điểm được ưu tiên không còn khả dụng.
 - Kiểm tra khả năng kết hợp chính sách Topology với các phương thức cân bằng tải và dự phòng khác.
 
-## PHẠM VI
-## Tham số mục tiêu thử nghiệm
-
-Các tham số và thông tin kỹ thuật cần được xác định trong quá trình triển khai:
-
-| STT | Tham số | Nội dung |
-|---|---|---|
-| 1 | Thiết bị F5 |  BIG-IP DNS, LTM |
-| 2 | Số lượng thiết bị | Số thiết bị F5 tham gia thử nghiệm |
-| 3 | Data Center | Số lượng và vị trí các Data Center |
-| 4 | Domain | Tên miền dịch vụ cần cân bằng tải |
-| 5 | Wide IP | Tên miền được cấu hình trên F5 BIG-IP DNS |
-| 6 | Pool | Các nhóm máy chủ dịch vụ tại từng Data Center |
-| 7 | Virtual Server | Địa chỉ IP và Port của các dịch vụ được giám sát |
-| 8 | Health Monitor | Phương thức và chu kỳ kiểm tra trạng thái dịch vụ |
-| 9 | Load Balancing Method | Round Robin, Ratio, Global Availability, Topology |
-| 10 | DNS Protocol | UDP/53 và TCP/53 |
-| 11 | DNS TTL | Thời gian lưu kết quả phân giải DNS |
-| 12 | DNS RPS | Số lượng truy vấn DNS xử lý mỗi giây |
-| 13 | Failover Time | Thời gian phát hiện sự cố và chuyển đổi |
-| 14 | Network | VLAN, Self IP, Gateway, Routing và kết nối giữa các DC |
-
-Các giá trị cụ thể sẽ được xác định theo cấu hình hạ tầng và yêu cầu của hệ thống thử nghiệm.
-
-## Các thành phần tham gia thử nghiệm
-
-Hệ thống thử nghiệm bao gồm các thành phần chính:
-
-- **F5 BIG-IP DNS:** Thực hiện chức năng cân bằng tải DNS toàn cầu, lựa chọn Data Center và địa chỉ IP dịch vụ phù hợp.
-- **DNS Client:** Thiết bị hoặc ứng dụng thực hiện yêu cầu phân giải tên miền.
-- **DNS Resolver (LDNS):** Tiếp nhận truy vấn từ Client và thực hiện quá trình phân giải tên miền.
-- **Data Center 1 (DC1):** Trung tâm dữ liệu chính hoặc một trong các trung tâm dữ liệu tham gia cung cấp dịch vụ.
-- **Data Center 2 (DC2):** Trung tâm dữ liệu dự phòng hoặc cùng tham gia cung cấp dịch vụ tùy theo mô hình triển khai.
-- **Backend Server:** Các máy chủ ứng dụng cung cấp dịch vụ Web, API hoặc các ứng dụng nghiệp vụ.
-- **Network Infrastructure:** Bao gồm Firewall, Router, Switch và các đường truyền kết nối giữa các Data Center.
-
 ## KIẾN TRÚC
 ##*Các trường hợp sử dụng*
 
