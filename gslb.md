@@ -147,27 +147,13 @@ Thông qua việc triển khai và kiểm tra các mô hình Active/Standby, Act
 - Kiểm tra khả năng kết hợp chính sách Topology với các phương thức cân bằng tải và dự phòng khác.
 
 ## PHẠM VI
-# 3. PHẠM VI
-
-## 3.1. Phạm vi thử nghiệm
-
-Thực hiện thử nghiệm giải pháp cân bằng tải toàn cầu GSLB (Global Server Load Balancing) trên nền tảng F5 BIG-IP DNS, tập trung đánh giá khả năng phân phối truy vấn DNS giữa nhiều Data Center, khả năng giám sát trạng thái dịch vụ và cơ chế chuyển đổi dự phòng khi xảy ra sự cố.
-
-Phạm vi thử nghiệm bao gồm ba mô hình triển khai chính:
-
-- **Mô hình Active/Standby:** Kiểm tra khả năng phân phối truy vấn đến Data Center chính và tự động chuyển hướng sang Data Center dự phòng khi hệ thống chính không còn khả dụng.
-- **Mô hình Active/Active:** Kiểm tra khả năng phân phối truy vấn DNS đồng thời giữa nhiều Data Center thông qua các thuật toán cân bằng tải như Round Robin và Ratio.
-- **Mô hình Topology-Based Load Balancing:** Kiểm tra khả năng phân phối truy vấn DNS dựa trên vị trí địa lý hoặc dải địa chỉ mạng nguồn của người dùng, nhằm lựa chọn Data Center phù hợp.
-
-Ngoài ra, thử nghiệm đánh giá khả năng kết hợp các mô hình trên với cơ chế Health Monitor, DNS Failover và các chính sách xử lý dự phòng của F5 BIG-IP DNS.
-
-## 3.2. Tham số mục tiêu thử nghiệm
+## Tham số mục tiêu thử nghiệm
 
 Các tham số và thông tin kỹ thuật cần được xác định trong quá trình triển khai:
 
 | STT | Tham số | Nội dung |
 |---|---|---|
-| 1 | Thiết bị F5 | Model, phiên bản BIG-IP DNS |
+| 1 | Thiết bị F5 |  BIG-IP DNS, LTM |
 | 2 | Số lượng thiết bị | Số thiết bị F5 tham gia thử nghiệm |
 | 3 | Data Center | Số lượng và vị trí các Data Center |
 | 4 | Domain | Tên miền dịch vụ cần cân bằng tải |
@@ -184,7 +170,7 @@ Các tham số và thông tin kỹ thuật cần được xác định trong qu�
 
 Các giá trị cụ thể sẽ được xác định theo cấu hình hạ tầng và yêu cầu của hệ thống thử nghiệm.
 
-## 3.3. Các thành phần tham gia thử nghiệm
+## Các thành phần tham gia thử nghiệm
 
 Hệ thống thử nghiệm bao gồm các thành phần chính:
 
@@ -196,48 +182,6 @@ Hệ thống thử nghiệm bao gồm các thành phần chính:
 - **Backend Server:** Các máy chủ ứng dụng cung cấp dịch vụ Web, API hoặc các ứng dụng nghiệp vụ.
 - **Network Infrastructure:** Bao gồm Firewall, Router, Switch và các đường truyền kết nối giữa các Data Center.
 
-## 3.4. Phạm vi chức năng thử nghiệm
-
-Tập trung kiểm tra và đánh giá các chức năng sau:
-
-- **GSLB:** Khả năng phân phối truy vấn DNS giữa nhiều Data Center.
-- **Wide IP:** Khai báo và quản lý tên miền dịch vụ cần cân bằng tải.
-- **Pool:** Quản lý các nhóm Virtual Server tại các Data Center.
-- **Health Monitor:** Kiểm tra trạng thái hoạt động của máy chủ và dịch vụ.
-- **Round Robin:** Phân phối truy vấn luân phiên giữa các Data Center.
-- **Ratio:** Phân phối truy vấn theo tỷ trọng cấu hình.
-- **Global Availability:** Ưu tiên Data Center chính và chuyển sang Data Center dự phòng khi xảy ra sự cố.
-- **Topology:** Phân phối truy vấn theo vị trí địa lý hoặc dải mạng nguồn của Client.
-- **DNS Failover:** Kiểm tra khả năng chuyển hướng truy vấn khi máy chủ hoặc Data Center không khả dụng.
-- **DNS Persistence:** Kiểm tra khả năng duy trì lựa chọn địa chỉ dịch vụ theo chính sách cấu hình.
-- **Monitoring và Logging:** Theo dõi trạng thái hoạt động, kết quả phân giải và các sự kiện phát sinh.
-
-## 3.5. Phạm vi kiểm thử và đánh giá
-
-Thực hiện các kịch bản kiểm thử nhằm đánh giá khả năng hoạt động của từng mô hình:
-
-| STT | Nội dung kiểm thử | Mục tiêu đánh giá |
-|---|---|---|
-| 1 | Kiểm tra phân giải tên miền | Đảm bảo Wide IP trả về địa chỉ IP hợp lệ |
-| 2 | Kiểm tra Active/Standby | Đánh giá khả năng chuyển đổi DC chính sang DC dự phòng |
-| 3 | Kiểm tra Active/Active | Đánh giá khả năng phân phối truy vấn giữa nhiều DC |
-| 4 | Kiểm tra Ratio | Đánh giá khả năng phân phối theo tỷ trọng |
-| 5 | Kiểm tra Global Availability | Đánh giá khả năng ưu tiên DC chính |
-| 6 | Kiểm tra Topology | Đánh giá khả năng lựa chọn DC theo nguồn truy cập |
-| 7 | Kiểm tra Health Monitor | Đánh giá khả năng phát hiện máy chủ không khả dụng |
-| 8 | Kiểm tra DNS Failover | Đánh giá khả năng chuyển hướng khi xảy ra sự cố |
-| 9 | Kiểm tra DNS TTL | Đánh giá ảnh hưởng của bộ nhớ đệm DNS đến quá trình chuyển đổi |
-| 10 | Kiểm tra hiệu năng | Đánh giá RPS và thời gian phản hồi DNS |
-
-## 3.6. Giới hạn phạm vi thử nghiệm
-
-- Thử nghiệm tập trung vào chức năng cân bằng tải DNS toàn cầu GSLB trên F5 BIG-IP DNS.
-- Không đi sâu vào cấu hình cân bằng tải nội bộ tại từng Data Center bằng F5 BIG-IP LTM, ngoại trừ các nội dung cần thiết để tích hợp và giám sát dịch vụ.
-- Không thực hiện thay đổi toàn bộ kiến trúc mạng hiện hữu ngoài các cấu hình cần thiết phục vụ thử nghiệm.
-- Không đánh giá toàn diện các giải pháp bảo mật mạng khác ngoài những chức năng bảo mật DNS nằm trong phạm vi được phê duyệt.
-- Các kết quả về hiệu năng, thời gian Failover và khả năng xử lý truy vấn được xác định thông qua kiểm thử thực tế, không mặc định theo thông số công bố của nhà sản xuất.
-### Phạm vi thử nghiệm
-### Tham số mục tiêu thử nghiệm
 ## KIẾN TRÚC
 ### Mô hình active/active
 *Nguyên lý hoạt động*
