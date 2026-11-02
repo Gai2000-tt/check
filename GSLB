@@ -1,8 +1,7 @@
 # Phương án Cân bằng tải DNS (GSLB)
-    
 ## TỔNG QUAN GIẢI PHÁP DNS CỦA
 ### Giới thiệu giải pháp 
-F5 BIG-IP DNS là giải pháp cân bằng tải DNS toàn cầu (Global Server Load Balancing – GSLB), được thiết kế nhằm tối ưu hóa khả năng phân phối truy cập đến các ứng dụng và dịch vụ được triển khai trên nhiều Data Center, hệ thống mạng nội bộ và môi trường Cloud. Giải pháp cho phép điều phối các truy vấn DNS dựa trên chính sách nghiệp vụ, vị trí địa lý của người dùng và trạng thái hoạt động, hiệu năng của ứng dụng/máy chủ, từ đó lựa chọn địa điểm cung cấp dịch vụ phù hợp nhất.
+F5 BIG-IP DNS là giải pháp cân bằng tải DNS toàn cầu (Global Server Load Balancing – GSLB), được thiết kế nhằm tối ưu hgfgghóa khả năng phân phối truy cập đến các ứng dụng và dịch vụ được triển khai trên nhiều Data Center, hệ thống mạng nội bộ và môi trường Cloud. Giải pháp cho phép điều phối các truy vấn DNS dựa trên chính sách nghiệp vụ, vị trí địa lý của người dùng và trạng thái hoạt động, hiệu năng của ứng dụng/máy chủ, từ đó lựa chọn địa điểm cung cấp dịch vụ phù hợp nhất.
 
 Thông qua cơ chế cân bằng tải ở cấp độ DNS, F5 BIG-IP DNS giúp doanh nghiệp phân phối truy cập giữa nhiều địa điểm triển khai, đảm bảo tính sẵn sàng của dịch vụ và hỗ trợ chuyển đổi dự phòng khi xảy ra sự cố. Hệ thống hỗ trợ các mô hình triển khai linh hoạt như Active/Active, Active/Passive và Active/DR Only, đáp ứng các yêu cầu khác nhau về phân phối tải, dự phòng và khôi phục sau thảm họa (Disaster Recovery).
 
