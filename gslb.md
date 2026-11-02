@@ -1,0 +1,54 @@
+# Phương án Cân bằng tải DNS (GSLB)
+## TỔNG QUAN GIẢI PHÁP DNS CỦA
+### Giới thiệu giải pháp 
+F5 BIG-IP DNS là giải pháp cân bằng tải DNS toàn cầu (Global Server Load Balancing – GSLB), được thiết kế nhằm tối ưu hóa khả năng phân phối truy cập đến các ứng dụng và dịch vụ được triển khai trên nhiều Data Center, hệ thống mạng nội bộ và môi trường Cloud. Giải pháp cho phép điều phối các truy vấn DNS dựa trên chính sách nghiệp vụ, vị trí địa lý của người dùng và trạng thái hoạt động, hiệu năng của ứng dụng/máy chủ, từ đó lựa chọn địa điểm cung cấp dịch vụ phù hợp nhất.
+
+Thông qua cơ chế cân bằng tải ở cấp độ DNS, F5 BIG-IP DNS giúp doanh nghiệp phân phối truy cập giữa nhiều địa điểm triển khai, đảm bảo tính sẵn sàng của dịch vụ và hỗ trợ chuyển đổi dự phòng khi xảy ra sự cố. Hệ thống hỗ trợ các mô hình triển khai linh hoạt như Active/Active, Active/Passive và Active/DR Only, đáp ứng các yêu cầu khác nhau về phân phối tải, dự phòng và khôi phục sau thảm họa (Disaster Recovery).
+
+Về hiệu năng, F5 BIG-IP DNS hỗ trợ khả năng mở rộng xử lý DNS ở quy mô lớn, với năng lực được F5 công bố lên tới 100 triệu phản hồi mỗi giây (Responses Per Second – RPS). Giải pháp tích hợp khả năng xử lý đa lõi (Multicore Scalability), DNS Express và IP Anycast nhằm nâng cao năng lực xử lý truy vấn, phân phối tải DNS và đáp ứng nhu cầu tăng trưởng lưu lượng. Trong đó, DNS Express hỗ trợ tăng tốc độ phản hồi DNS bằng cách xử lý và trả lời truy vấn trực tiếp, với khả năng mở rộng từ hàng trăm nghìn lên hơn 50 triệu RPS theo công bố của nhà sản xuất. Ngoài ra, cơ chế mở rộng theo nhu cầu (On-Demand Scaling) cho phép điều chỉnh năng lực xử lý thông qua các giới hạn về tốc độ truy vấn và số lượng đối tượng được cấu hình.
+
+Bên cạnh khả năng cân bằng tải, F5 BIG-IP DNS cung cấp các tính năng hỗ trợ bảo mật DNS nhằm bảo vệ hệ thống trước các nguy cơ tấn công và giả mạo truy vấn. Giải pháp có thể kết hợp với F5 BIG-IP AFM để tăng cường khả năng bảo vệ trước các cuộc tấn công DDoS nhắm vào DNS, bao gồm UDP Flood và DNS Amplification. Đồng thời, DNSSEC hỗ trợ bảo vệ quá trình phân giải tên miền trước các hình thức tấn công đầu độc bộ nhớ đệm DNS (Cache Poisoning) và tấn công xen giữa (Man-in-the-Middle). Hệ thống cũng hỗ trợ xử lý các truy vấn DNS được mã hóa thông qua DNS over HTTPS (DoH) và DNS over TLS (DoT), góp phần bảo vệ tính toàn vẹn và an toàn của quá trình trao đổi dữ liệu DNS.
+
+Để cải thiện hiệu năng phân giải tên miền, F5 BIG-IP DNS hỗ trợ cơ chế DNS Caching nhằm tập trung bộ nhớ đệm DNS, nâng cao tỷ lệ Cache Hit và giảm độ trễ phản hồi. Theo công bố của F5, việc tối ưu hóa bộ nhớ đệm có thể giúp giảm độ trễ DNS lên tới 80%. Bên cạnh đó, giải pháp hỗ trợ khả năng tự thực hiện phân giải DNS mà không bắt buộc phải phụ thuộc vào DNS Resolver ở phía trên. Việc tích hợp IP Anycast cho phép phân phối tải truy vấn DNS đến nhiều thiết bị tại các vị trí khác nhau thông qua một địa chỉ IP, góp phần nâng cao khả năng mở rộng và tính sẵn sàng của dịch vụ DNS.
+
+Một tính năng quan trọng khác của F5 BIG-IP DNS là khả năng điều hướng truy cập dựa trên vị trí địa lý (Location-Based Routing). Thông qua cơ chế cân bằng tải theo Topology, hệ thống có thể lựa chọn Data Center phù hợp với vị trí địa lý hoặc mạng nguồn của người dùng, giúp tối ưu đường truy cập và cải thiện trải nghiệm sử dụng ứng dụng. Việc lựa chọn địa điểm phục vụ cũng có thể kết hợp với các chính sách nghiệp vụ và trạng thái hoạt động thực tế của ứng dụng, máy chủ.
+
+Ngoài ra, F5 BIG-IP DNS hỗ trợ tích hợp với hạ tầng mạng hiện có thông qua khả năng giao tiếp với các thiết bị mạng, SNMP Agent, DNS Cache của bên thứ ba, máy chủ, Router và các hệ thống cân bằng tải khác. Điều này cho phép hệ thống thu thập thông tin, đánh giá trạng thái của các điểm dịch vụ và hỗ trợ quản trị tập trung. Khi xảy ra sự cố, giải pháp có khả năng thực hiện Failover ở phạm vi toàn bộ Data Center hoặc từng ứng dụng, máy chủ riêng lẻ, đảm bảo người dùng tiếp tục có thể truy cập các dịch vụ còn khả dụng.
+
+Với các tính năng về hiệu năng xử lý, cân bằng tải toàn cầu, bảo mật DNS, tối ưu bộ nhớ đệm và khả năng chuyển đổi dự phòng, F5 BIG-IP DNS là giải pháp phù hợp để xây dựng hệ thống GSLB, đáp ứng yêu cầu phân phối truy cập đa Data Center, nâng cao tính sẵn sàng và đảm bảo khả năng vận hành liên tục cho các ứng dụng, dịch vụ của doanh nghiệp.
+### Phương pháp cân bằng tải GSLB
+### Các phương thức phân phối truy vấn tại cấp độ Wide IP
+
+F5 BIG-IP DNS cung cấp các phương thức phân phối truy vấn DNS tại cấp độ Wide IP (Wide IP Load Balancing), cho phép lựa chọn Pool cung cấp dịch vụ dựa trên các chính sách cân bằng tải được cấu hình. Mỗi Wide IP có thể liên kết với một hoặc nhiều Pool, tương ứng với các hệ thống dịch vụ được triển khai tại các Data Center khác nhau.
+
+Các phương thức phân phối truy vấn chính bao gồm:
+
+**Round Robin:**
+
+Phân phối các truy vấn DNS lần lượt và đồng đều giữa các Pool đang khả dụng. Phương thức này phù hợp với mô hình nhiều Data Center cùng tham gia cung cấp dịch vụ và có năng lực xử lý tương đương.
+
+**Ratio:**
+
+Phân phối truy vấn DNS giữa các Pool theo tỷ trọng được cấu hình. Quản trị viên có thể thiết lập tỷ lệ phân phối khác nhau tùy theo năng lực xử lý của từng Data Center, giúp tối ưu việc sử dụng tài nguyên hệ thống.
+
+**Global Availability:**
+
+Phân phối truy vấn DNS theo thứ tự ưu tiên được thiết lập trước. Hệ thống ưu tiên lựa chọn Pool đầu tiên còn khả dụng trong danh sách. Khi Pool ưu tiên không còn đáp ứng điều kiện phục vụ, F5 sẽ chuyển sang Pool tiếp theo. Phương thức này phù hợp với mô hình Data Center chính và Data Center dự phòng (Active/Standby).
+
+**Topology:**
+
+Phân phối truy vấn DNS dựa trên các tiêu chí được quản trị viên định nghĩa, chẳng hạn vị trí địa lý hoặc dải địa chỉ mạng nguồn của Client. Hệ thống lựa chọn Pool phù hợp với từng nhóm người dùng nhằm tối ưu vị trí truy cập và hiệu năng dịch vụ.
+
+Thông qua các phương thức trên, F5 BIG-IP DNS hỗ trợ triển khai nhiều mô hình phân phối truy cập khác nhau, từ cân bằng tải đồng đều, cân bằng tải theo tỷ trọng, ưu tiên Data Center chính đến phân phối truy cập theo vị trí địa lý.
+### Nguyên lý hoạt động của giải pháp cân bằng tải DNS
+## MỤC ĐÍCH
+## PHẠM VI
+### Phạm vi thử nghiệm
+### Tham số mục tiêu thử nghiệm
+## KIẾN TRÚC
+### Mô hình active/active
+*Nguyên lý hoạt động*
+*Ưu điểm*
+*Nhược điểm*
+*Mô hình triển khai*
+*Cấu hình BIGIP F5 DNS*
