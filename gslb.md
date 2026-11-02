@@ -116,6 +116,36 @@ Hai cấp độ phân phối truy vấn hoạt động phối hợp với nhau t
 
 Việc kết hợp hai cấp độ cho phép triển khai linh hoạt các mô hình cân bằng tải và dự phòng giữa nhiều Data Center, đồng thời tối ưu việc phân phối truy vấn đến các máy chủ cung cấp dịch vụ.
 ## MỤC ĐÍCH
+### Mục tiêu thử nghiệm
+
+Thực hiện thử nghiệm các mô hình cân bằng tải toàn cầu GSLB (Global Server Load Balancing) trên nền tảng F5 BIG-IP DNS nhằm đánh giá khả năng phân phối truy cập và đảm bảo tính sẵn sàng của các dịch vụ được triển khai tại nhiều Data Center.
+
+Thông qua việc triển khai và kiểm tra các mô hình Active/Standby, Active/Active và Topology-Based Load Balancing, đánh giá khả năng điều phối truy vấn DNS, chuyển đổi dự phòng khi xảy ra sự cố và lựa chọn Data Center phù hợp dựa trên các chính sách phân phối được cấu hình.
+
+### Mục tiêu đánh giá mô hình Active/Standby
+
+- Kiểm tra khả năng triển khai mô hình Data Center chính và Data Center dự phòng.
+- Đánh giá khả năng ưu tiên phân phối truy vấn DNS đến Data Center chính khi hệ thống hoạt động bình thường.
+- Kiểm tra khả năng phát hiện sự cố tại Data Center chính thông qua cơ chế Health Monitor.
+- Đánh giá khả năng tự động chuyển hướng truy vấn DNS sang Data Center dự phòng khi Data Center chính không còn khả dụng.
+- Kiểm tra khả năng khôi phục và chuyển lại hoạt động về Data Center chính sau khi sự cố được khắc phục.
+
+### Mục tiêu đánh giá mô hình Active/Active
+
+- Kiểm tra khả năng triển khai nhiều Data Center cùng tham gia cung cấp một dịch vụ.
+- Đánh giá khả năng phân phối truy vấn DNS giữa các Data Center thông qua các thuật toán cân bằng tải như Round Robin và Ratio.
+- Kiểm tra khả năng phân phối tải theo tỷ trọng cấu hình và năng lực xử lý của từng Data Center.
+- Đánh giá khả năng duy trì cung cấp dịch vụ khi một Data Center gặp sự cố.
+- Kiểm tra khả năng tiếp tục phân phối truy vấn đến các Data Center còn khả dụng khi xảy ra sự cố tại một địa điểm triển khai.
+
+### Mục tiêu đánh giá mô hình Topology-Based Load Balancing
+
+- Kiểm tra khả năng phân phối truy vấn DNS dựa trên vị trí địa lý hoặc dải địa chỉ mạng nguồn của người dùng.
+- Đánh giá khả năng lựa chọn Data Center phù hợp với từng khu vực truy cập.
+- Kiểm tra khả năng cấu hình và áp dụng các quy tắc Topology trên F5 BIG-IP DNS.
+- Đánh giá khả năng chuyển hướng truy vấn sang Data Center khác khi địa điểm được ưu tiên không còn khả dụng.
+- Kiểm tra khả năng kết hợp chính sách Topology với các phương thức cân bằng tải và dự phòng khác.
+
 ## PHẠM VI
 ### Phạm vi thử nghiệm
 ### Tham số mục tiêu thử nghiệm
