@@ -183,54 +183,88 @@ Hệ thống thử nghiệm bao gồm các thành phần chính:
 - **Network Infrastructure:** Bao gồm Firewall, Router, Switch và các đường truyền kết nối giữa các Data Center.
 
 ## KIẾN TRÚC
-## 4.3. Mô hình Lab
+##*Các trường hợp sử dụng*
 
-### 4.3.1. Kiến trúc mô hình Lab
+### Mô hình Active/Standby
 
-Mô hình Lab được xây dựng nhằm mô phỏng hệ thống cân bằng tải toàn cầu GSLB trên nền tảng F5 BIG-IP DNS, với hai Data Center (DC1 và DC2) cùng tham gia cung cấp dịch vụ.
+#### Ưu điểm
 
-Mỗi Data Center được triển khai một thiết bị F5 BIG-IP DNS và một thiết bị F5 BIG-IP LTM. Các Application Server được bố trí phía sau F5 BIG-IP LTM để cung cấp dịch vụ ứng dụng. Hai máy Client Ubuntu được đặt tại các mạng khác nhau nhằm thực hiện truy vấn DNS, kiểm tra kết quả phân giải và đánh giá khả năng điều hướng truy cập theo từng mô hình GSLB.
+- **Đảm bảo tính sẵn sàng của dịch vụ:** Khi Data Center chính gặp sự cố, F5 BIG-IP DNS có thể tự động chuyển hướng truy vấn DNS sang Data Center dự phòng, giúp duy trì khả năng truy cập dịch vụ.
+- **Đơn giản trong triển khai và quản lý:** Mô hình có cấu trúc rõ ràng, phân định cụ thể vai trò giữa Data Center chính và Data Center dự phòng, thuận tiện cho việc cấu hình và vận hành.
+- **Tối ưu khả năng dự phòng:** Tài nguyên tại Data Center dự phòng được dành để tiếp quản dịch vụ khi Data Center chính không còn khả dụng.
+- **Giảm thiểu rủi ro gián đoạn dịch vụ:** Cơ chế Health Monitor giúp phát hiện tình trạng lỗi của dịch vụ và hỗ trợ kích hoạt chuyển đổi dự phòng.
+- **Dễ dàng kiểm soát hoạt động:** Việc tập trung lưu lượng vào Data Center chính giúp quản trị viên dễ dàng theo dõi, giám sát và quản lý hoạt động của hệ thống.
 
-Kiến trúc hệ thống bao gồm:
+#### Nhược điểm
 
-- **DC1:** Triển khai 01 F5 BIG-IP DNS, 01 F5 BIG-IP LTM và các Application Server cung cấp dịch vụ.
-- **DC2:** Triển khai 01 F5 BIG-IP DNS, 01 F5 BIG-IP LTM và các Application Server cung cấp dịch vụ.
-- **F5 BIG-IP DNS:** Thực hiện chức năng GSLB, quản lý Wide IP, Pool, Health Monitor và điều phối truy vấn DNS giữa hai Data Center.
-- **F5 BIG-IP LTM:** Thực hiện cân bằng tải ứng dụng nội bộ tại từng Data Center, phân phối lưu lượng đến các Application Server.
-- **Application Server:** Cung cấp các dịch vụ Web, API hoặc ứng dụng thử nghiệm.
-- **Client Ubuntu:** Thực hiện truy vấn DNS và truy cập dịch vụ để kiểm tra hoạt động của hệ thống.
+- **Chưa tối ưu việc sử dụng tài nguyên:** Data Center dự phòng thường không tham gia phục vụ truy cập trong điều kiện bình thường, dẫn đến lãng phí một phần tài nguyên đã đầu tư.
+- **Phụ thuộc vào Data Center chính:** Phần lớn lưu lượng truy cập tập trung tại Data Center chính, khiến hệ thống phụ thuộc nhiều vào khả năng hoạt động của địa điểm này.
+- **Có thể phát sinh độ trễ khi chuyển đổi:** Quá trình phát hiện sự cố, chuyển hướng DNS và cập nhật kết quả phân giải có thể mất thời gian, đặc biệt khi các DNS Resolver vẫn lưu kết quả cũ trong bộ nhớ đệm.
+- **Yêu cầu đồng bộ dữ liệu giữa các Data Center:** Data Center dự phòng cần được duy trì dữ liệu, cấu hình và trạng thái ứng dụng phù hợp để có thể tiếp quản dịch vụ khi xảy ra sự cố.
+- **Khả năng mở rộng chưa linh hoạt:** Khi nhu cầu truy cập tăng cao, Data Center chính vẫn là nơi chịu tải chủ yếu; Data Center dự phòng không được tận dụng để chia sẻ tải trong điều kiện hoạt động bình thường.
 
-### 4.3.2. Sơ đồ kết nối mô hình Lab
+#### Nhận xét
 
-```mermaid
-flowchart TB
-    subgraph CLIENT["Mạng Client"]
-        C1["Client Ubuntu 01"]
-        C2["Client Ubuntu 02"]
-    end
+Mô hình Active/Standby phù hợp với các hệ thống ưu tiên tính sẵn sàng, yêu cầu có Data Center dự phòng và không đặt nặng việc khai thác đồng thời tài nguyên tại nhiều địa điểm. Đây là phương án phù hợp đối với các dịch vụ nghiệp vụ quan trọng cần có cơ chế dự phòng và khôi phục khi xảy ra sự cố.
 
-    subgraph DC1["DATA CENTER 1"]
-        DNS1["F5 BIG-IP DNS 01"]
-        LTM1["F5 BIG-IP LTM 01"]
-        APP1["Application Server 01"]
-        APP2["Application Server 02"]
-        DNS1 -->|"GSLB / Health Monitor"| LTM1
-        LTM1 --> APP1
-        LTM1 --> APP2
-    end
+---
 
-    subgraph DC2["DATA CENTER 2"]
-        DNS2["F5 BIG-IP DNS 02"]
-        LTM2["F5 BIG-IP LTM 02"]
-        APP3["Application Server 03"]
-        APP4["Application Server 04"]
-        DNS2 -->|"GSLB / Health Monitor"| LTM2
-        LTM2 --> APP3
-        LTM2 --> APP4
-    end
+### Mô hình Active/Active
 
-    C1 -->|"DNS Query / Application Access"| DNS1
-    C2 -->|"DNS Query / Application Access"| DNS2
-    DNS1 <-->|"iQuery / GSLB Sync"| DNS2
-    DNS1 -->|"Trả về VIP dịch vụ"| C1
-    DNS2 -->|"Trả về VIP dịch vụ"| C2
+#### Ưu điểm
+
+- **Tận dụng tối đa tài nguyên hệ thống:** Các Data Center cùng tham gia cung cấp dịch vụ trong điều kiện bình thường, giúp khai thác hiệu quả hạ tầng và tài nguyên đã đầu tư.
+- **Phân phối tải linh hoạt:** F5 BIG-IP DNS hỗ trợ phân phối truy vấn DNS giữa nhiều Data Center thông qua các thuật toán như Round Robin và Ratio, giúp điều tiết tải theo nhu cầu.
+- **Nâng cao tính sẵn sàng:** Khi một Data Center gặp sự cố, hệ thống có thể loại bỏ địa điểm không khả dụng và chuyển hướng truy vấn đến các Data Center còn hoạt động.
+- **Tăng khả năng mở rộng:** Có thể bổ sung thêm Data Center hoặc máy chủ vào hệ thống để đáp ứng nhu cầu tăng trưởng lưu lượng truy cập.
+- **Tối ưu hiệu năng dịch vụ:** Việc phân phối truy vấn giữa nhiều Data Center giúp giảm áp lực xử lý tập trung tại một địa điểm, cải thiện khả năng đáp ứng của hệ thống.
+- **Linh hoạt trong phân phối tải:** Có thể thiết lập tỷ trọng phân phối khác nhau giữa các Data Center dựa trên năng lực xử lý và tài nguyên thực tế.
+
+#### Nhược điểm
+
+- **Chi phí đầu tư và vận hành cao:** Cần triển khai, duy trì nhiều Data Center cùng hoạt động, làm tăng chi phí hạ tầng, thiết bị, đường truyền và nhân lực quản trị.
+- **Yêu cầu đồng bộ dữ liệu:** Các Data Center cần đảm bảo tính nhất quán dữ liệu và trạng thái ứng dụng để tránh phát sinh sai lệch khi người dùng được điều hướng đến các địa điểm khác nhau.
+- **Cấu hình và quản trị phức tạp:** Việc triển khai nhiều Data Center cùng tham gia cung cấp dịch vụ đòi hỏi cấu hình GSLB, Health Monitor, thuật toán cân bằng tải và cơ chế dự phòng phù hợp.
+- **Khó kiểm soát tải thực tế:** Tỷ lệ phân phối truy vấn DNS không hoàn toàn tương ứng với tỷ lệ lưu lượng truy cập thực tế do ảnh hưởng của DNS Cache và TTL.
+- **Yêu cầu năng lực xử lý đồng đều:** Các Data Center cần có đủ tài nguyên để tiếp nhận lưu lượng khi một địa điểm khác gặp sự cố.
+- **Có thể phát sinh vấn đề về phiên làm việc:** Nếu ứng dụng lưu trạng thái phiên tại máy chủ cục bộ, người dùng có thể gặp gián đoạn khi các truy vấn tiếp theo được điều hướng sang Data Center khác.
+
+#### Nhận xét
+
+Mô hình Active/Active phù hợp với các hệ thống có lưu lượng truy cập lớn, yêu cầu khai thác đồng thời tài nguyên tại nhiều Data Center và cần khả năng mở rộng linh hoạt. Mô hình giúp nâng cao hiệu quả sử dụng hạ tầng, phân phối tải và tăng tính sẵn sàng của dịch vụ. Tuy nhiên, việc triển khai đòi hỏi hệ thống có khả năng đồng bộ dữ liệu, quản lý trạng thái ứng dụng và kiểm soát tải giữa các Data Center hiệu quả.
+
+---
+
+### Mô hình GSLB theo Topology (Topology-Based Load Balancing)
+
+#### Ưu điểm
+
+- **Tối ưu đường truy cập:** F5 BIG-IP DNS lựa chọn Data Center dựa trên vị trí địa lý hoặc dải địa chỉ mạng nguồn của Client, giúp người dùng được điều hướng đến địa điểm cung cấp dịch vụ phù hợp.
+- **Cải thiện trải nghiệm người dùng:** Việc điều hướng truy cập đến Data Center phù hợp với khu vực của người dùng có thể giúp giảm độ trễ mạng và cải thiện tốc độ truy cập dịch vụ.
+- **Phân phối tải theo khu vực:** Cho phép phân chia người dùng theo khu vực địa lý hoặc mạng nguồn, hạn chế tình trạng tập trung truy cập vào một Data Center.
+- **Linh hoạt trong cấu hình:** Quản trị viên có thể xây dựng các quy tắc Topology khác nhau để điều hướng người dùng đến các Data Center theo chính sách nghiệp vụ.
+- **Hỗ trợ dự phòng:** Có thể kết hợp Topology với các phương thức cân bằng tải và cơ chế dự phòng để chuyển hướng người dùng sang Data Center khác khi địa điểm ưu tiên gặp sự cố.
+- **Phù hợp với hệ thống đa Data Center:** Đặc biệt hữu ích đối với doanh nghiệp có hạ tầng triển khai tại nhiều khu vực địa lý, phục vụ người dùng trên phạm vi rộng.
+
+#### Nhược điểm
+
+- **Yêu cầu cấu hình phức tạp:** Cần xây dựng và quản lý các quy tắc Topology dựa trên vị trí địa lý hoặc dải địa chỉ mạng, đòi hỏi quá trình thiết kế và cấu hình chính xác.
+- **Phụ thuộc vào thông tin vị trí nguồn truy vấn:** Việc lựa chọn Data Center phụ thuộc vào thông tin địa chỉ IP của Client hoặc DNS Resolver (LDNS). Trong một số trường hợp, địa chỉ LDNS có thể không phản ánh chính xác vị trí thực tế của người dùng.
+- **Khó khăn trong quản lý khi mở rộng:** Khi bổ sung Data Center hoặc mở rộng phạm vi phục vụ, cần cập nhật và điều chỉnh các quy tắc Topology để đảm bảo việc phân phối truy cập chính xác.
+- **Không đảm bảo phân phối tải đồng đều:** Việc điều hướng theo khu vực địa lý không đồng nghĩa với việc phân chia tải cân bằng giữa các Data Center. Một khu vực có lượng người dùng lớn có thể tạo ra tải cao hơn đáng kể.
+- **Phụ thuộc vào DNS Cache và TTL:** Khi thay đổi quy tắc điều hướng hoặc xảy ra sự cố tại Data Center, kết quả phân giải DNS đã được lưu trong bộ nhớ đệm có thể khiến người dùng tiếp tục truy cập địa chỉ cũ trong một khoảng thời gian.
+- **Cần xây dựng chính sách dự phòng bổ sung:** Nếu Data Center được ưu tiên theo Topology gặp sự cố, cần cấu hình quy tắc thay thế hoặc cơ chế dự phòng để điều hướng người dùng đến địa điểm khác.
+
+#### Nhận xét
+
+Mô hình GSLB theo Topology phù hợp với các hệ thống có nhiều Data Center được triển khai tại các khu vực địa lý khác nhau, có nhu cầu điều hướng người dùng đến địa điểm cung cấp dịch vụ phù hợp dựa trên vị trí hoặc mạng nguồn truy cập. Mô hình giúp tối ưu đường truyền, cải thiện trải nghiệm người dùng và linh hoạt trong việc phân phối truy cập theo khu vực. Tuy nhiên, để đảm bảo hiệu quả vận hành, cần xây dựng các quy tắc Topology hợp lý, kết hợp cơ chế giám sát trạng thái dịch vụ và dự phòng khi xảy ra sự cố.  
+## Môi trường LAB
+
+**Bảng môi trường triển khai Lab thử nghiệm GSLB trên F5**
+
+| STT | Thành phần | Số lượng | Vai trò / Chức năng | Mục đích sử dụng |
+|---|---|---|---|---|
+| 1 | F5 BIG-IP DNS | 2 | Thiết bị cân bằng tải DNS toàn cầu (GSLB) | Cấu hình Wide IP, Pool, Health Monitor, Round Robin, Ratio, Global Availability và Topology |
+| 2 | F5 BIG-IP LTM | 2 | Thiết bị cân bằng tải ứng dụng tại các Data Center | Phân phối lưu lượng truy cập đến các máy chủ ứng dụng Backend |
+| 3 | Application Server | Một số | Máy chủ cung cấp dịch vụ ứng dụng | Triển khai Web, API hoặc các ứng dụng thử nghiệm tại DC1 và DC2 |
+| 4 | Client Ubuntu | 2 | Máy trạm thực hiện truy cập dịch vụ | Kiểm tra truy vấn DNS, kết quả phân giải và khả năng truy cập ứng dụng từ các mạng khác nhau |
