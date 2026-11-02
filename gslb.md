@@ -183,9 +183,54 @@ Hệ thống thử nghiệm bao gồm các thành phần chính:
 - **Network Infrastructure:** Bao gồm Firewall, Router, Switch và các đường truyền kết nối giữa các Data Center.
 
 ## KIẾN TRÚC
-### Mô hình active/active
-*Nguyên lý hoạt động*
-*Ưu điểm*
-*Nhược điểm*
-*Mô hình triển khai*
-*Cấu hình BIGIP F5 DNS*
+## 4.3. Mô hình Lab
+
+### 4.3.1. Kiến trúc mô hình Lab
+
+Mô hình Lab được xây dựng nhằm mô phỏng hệ thống cân bằng tải toàn cầu GSLB trên nền tảng F5 BIG-IP DNS, với hai Data Center (DC1 và DC2) cùng tham gia cung cấp dịch vụ.
+
+Mỗi Data Center được triển khai một thiết bị F5 BIG-IP DNS và một thiết bị F5 BIG-IP LTM. Các Application Server được bố trí phía sau F5 BIG-IP LTM để cung cấp dịch vụ ứng dụng. Hai máy Client Ubuntu được đặt tại các mạng khác nhau nhằm thực hiện truy vấn DNS, kiểm tra kết quả phân giải và đánh giá khả năng điều hướng truy cập theo từng mô hình GSLB.
+
+Kiến trúc hệ thống bao gồm:
+
+- **DC1:** Triển khai 01 F5 BIG-IP DNS, 01 F5 BIG-IP LTM và các Application Server cung cấp dịch vụ.
+- **DC2:** Triển khai 01 F5 BIG-IP DNS, 01 F5 BIG-IP LTM và các Application Server cung cấp dịch vụ.
+- **F5 BIG-IP DNS:** Thực hiện chức năng GSLB, quản lý Wide IP, Pool, Health Monitor và điều phối truy vấn DNS giữa hai Data Center.
+- **F5 BIG-IP LTM:** Thực hiện cân bằng tải ứng dụng nội bộ tại từng Data Center, phân phối lưu lượng đến các Application Server.
+- **Application Server:** Cung cấp các dịch vụ Web, API hoặc ứng dụng thử nghiệm.
+- **Client Ubuntu:** Thực hiện truy vấn DNS và truy cập dịch vụ để kiểm tra hoạt động của hệ thống.
+
+### 4.3.2. Sơ đồ kết nối mô hình Lab
+
+```mermaid
+flowchart TB
+    subgraph CLIENT["Mạng Client"]
+        C1["Client Ubuntu 01"]
+        C2["Client Ubuntu 02"]
+    end
+
+    subgraph DC1["DATA CENTER 1"]
+        DNS1["F5 BIG-IP DNS 01"]
+        LTM1["F5 BIG-IP LTM 01"]
+        APP1["Application Server 01"]
+        APP2["Application Server 02"]
+        DNS1 -->|"GSLB / Health Monitor"| LTM1
+        LTM1 --> APP1
+        LTM1 --> APP2
+    end
+
+    subgraph DC2["DATA CENTER 2"]
+        DNS2["F5 BIG-IP DNS 02"]
+        LTM2["F5 BIG-IP LTM 02"]
+        APP3["Application Server 03"]
+        APP4["Application Server 04"]
+        DNS2 -->|"GSLB / Health Monitor"| LTM2
+        LTM2 --> APP3
+        LTM2 --> APP4
+    end
+
+    C1 -->|"DNS Query / Application Access"| DNS1
+    C2 -->|"DNS Query / Application Access"| DNS2
+    DNS1 <-->|"iQuery / GSLB Sync"| DNS2
+    DNS1 -->|"Trả về VIP dịch vụ"| C1
+    DNS2 -->|"Trả về VIP dịch vụ"| C2
