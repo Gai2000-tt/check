@@ -17,7 +17,7 @@ Ngoài ra, F5 BIG-IP DNS hỗ trợ tích hợp với hạ tầng mạng hiện 
 
 Với các tính năng về hiệu năng xử lý, cân bằng tải toàn cầu, bảo mật DNS, tối ưu bộ nhớ đệm và khả năng chuyển đổi dự phòng, F5 BIG-IP DNS là giải pháp phù hợp để xây dựng hệ thống GSLB, đáp ứng yêu cầu phân phối truy cập đa Data Center, nâng cao tính sẵn sàng và đảm bảo khả năng vận hành liên tục cho các ứng dụng, dịch vụ của doanh nghiệp.
 ### Phương pháp cân bằng tải GSLB
-###*Các phương thức phân phối truy vấn tại cấp độ Wide IP*
+### *Các phương thức phân phối truy vấn tại cấp độ Wide IP*
 
 F5 BIG-IP DNS cung cấp các phương thức phân phối truy vấn DNS tại cấp độ Wide IP (Wide IP Load Balancing), cho phép lựa chọn Pool cung cấp dịch vụ dựa trên các chính sách cân bằng tải được cấu hình. Mỗi Wide IP có thể liên kết với một hoặc nhiều Pool, tương ứng với các hệ thống dịch vụ được triển khai tại các Data Center khác nhau.
 
@@ -40,7 +40,7 @@ Phân phối truy vấn DNS theo thứ tự ưu tiên được thiết lập tr�
 Phân phối truy vấn DNS dựa trên các tiêu chí được quản trị viên định nghĩa, chẳng hạn vị trí địa lý hoặc dải địa chỉ mạng nguồn của Client. Hệ thống lựa chọn Pool phù hợp với từng nhóm người dùng nhằm tối ưu vị trí truy cập và hiệu năng dịch vụ.
 
 Thông qua các phương thức trên, F5 BIG-IP DNS hỗ trợ triển khai nhiều mô hình phân phối truy cập khác nhau, từ cân bằng tải đồng đều, cân bằng tải theo tỷ trọng, ưu tiên Data Center chính đến phân phối truy cập theo vị trí địa lý.
-###*Các phương thức phân phối truy vấn tại cấp độ pool*
+### *Các phương thức phân phối truy vấn tại cấp độ pool*
 Trong giải pháp F5 BIG-IP DNS, bên cạnh các phương thức phân phối truy vấn tại cấp độ Wide IP, hệ thống còn hỗ trợ các phương thức cân bằng tải tại cấp độ Pool (Pool-Level Load Balancing). Chức năng này cho phép lựa chọn máy chủ hoặc dịch vụ đích (Virtual Server) bên trong một Pool dựa trên các chính sách phân phối được cấu hình.
 
 Mỗi Pool có thể bao gồm nhiều Virtual Server, đại diện cho các máy chủ hoặc dịch vụ được triển khai tại cùng một Data Center hoặc các địa điểm khác nhau. Khi một Pool được lựa chọn tại cấp độ Wide IP, F5 BIG-IP DNS tiếp tục thực hiện lựa chọn Virtual Server phù hợp trong Pool đó để trả về địa chỉ IP tương ứng cho truy vấn DNS.
