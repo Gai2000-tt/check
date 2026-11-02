@@ -1,4 +1,5 @@
 # Phương án Cân bằng tải DNS
+
 ## TỔNG QUAN GIẢI PHÁP DNS CỦA F5
 ### Giới thiệu giải pháp 
 ### Các tính năng chính của DNS
@@ -11,4 +12,5 @@
 ## KIẾN TRÚC
 ## MÔ HÌNH TRIỂN KHAI
 ### Mô hình active/active
+** Nguyên lý hoạt động **
 
