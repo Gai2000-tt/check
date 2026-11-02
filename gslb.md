@@ -1,5 +1,5 @@
 # Phương án Cân bằng tải DNS (GSLB)
-## TỔNG QUAN GIẢI PHÁP DNS CỦA
+## TỔNG QUAN GIẢI PHÁP DNS CỦA 
 ### Giới thiệu giải pháp 
 F5 BIG-IP DNS là giải pháp cân bằng tải DNS toàn cầu (Global Server Load Balancing – GSLB), được thiết kế nhằm tối ưu hóa khả năng phân phối truy cập đến các ứng dụng và dịch vụ được triển khai trên nhiều Data Center, hệ thống mạng nội bộ và môi trường Cloud. Giải pháp cho phép điều phối các truy vấn DNS dựa trên chính sách nghiệp vụ, vị trí địa lý của người dùng và trạng thái hoạt động, hiệu năng của ứng dụng/máy chủ, từ đó lựa chọn địa điểm cung cấp dịch vụ phù hợp nhất.
 
@@ -17,7 +17,7 @@ Ngoài ra, F5 BIG-IP DNS hỗ trợ tích hợp với hạ tầng mạng hiện 
 
 Với các tính năng về hiệu năng xử lý, cân bằng tải toàn cầu, bảo mật DNS, tối ưu bộ nhớ đệm và khả năng chuyển đổi dự phòng, F5 BIG-IP DNS là giải pháp phù hợp để xây dựng hệ thống GSLB, đáp ứng yêu cầu phân phối truy cập đa Data Center, nâng cao tính sẵn sàng và đảm bảo khả năng vận hành liên tục cho các ứng dụng, dịch vụ của doanh nghiệp.
 ### Phương pháp cân bằng tải GSLB
-### Các phương thức phân phối truy vấn tại cấp độ Wide IP
+###*Các phương thức phân phối truy vấn tại cấp độ Wide IP*
 
 F5 BIG-IP DNS cung cấp các phương thức phân phối truy vấn DNS tại cấp độ Wide IP (Wide IP Load Balancing), cho phép lựa chọn Pool cung cấp dịch vụ dựa trên các chính sách cân bằng tải được cấu hình. Mỗi Wide IP có thể liên kết với một hoặc nhiều Pool, tương ứng với các hệ thống dịch vụ được triển khai tại các Data Center khác nhau.
 
@@ -40,7 +40,81 @@ Phân phối truy vấn DNS theo thứ tự ưu tiên được thiết lập tr�
 Phân phối truy vấn DNS dựa trên các tiêu chí được quản trị viên định nghĩa, chẳng hạn vị trí địa lý hoặc dải địa chỉ mạng nguồn của Client. Hệ thống lựa chọn Pool phù hợp với từng nhóm người dùng nhằm tối ưu vị trí truy cập và hiệu năng dịch vụ.
 
 Thông qua các phương thức trên, F5 BIG-IP DNS hỗ trợ triển khai nhiều mô hình phân phối truy cập khác nhau, từ cân bằng tải đồng đều, cân bằng tải theo tỷ trọng, ưu tiên Data Center chính đến phân phối truy cập theo vị trí địa lý.
-### Nguyên lý hoạt động của giải pháp cân bằng tải DNS
+###*Các phương thức phân phối truy vấn tại cấp độ pool*
+Trong giải pháp F5 BIG-IP DNS, bên cạnh các phương thức phân phối truy vấn tại cấp độ Wide IP, hệ thống còn hỗ trợ các phương thức cân bằng tải tại cấp độ Pool (Pool-Level Load Balancing). Chức năng này cho phép lựa chọn máy chủ hoặc dịch vụ đích (Virtual Server) bên trong một Pool dựa trên các chính sách phân phối được cấu hình.
+
+Mỗi Pool có thể bao gồm nhiều Virtual Server, đại diện cho các máy chủ hoặc dịch vụ được triển khai tại cùng một Data Center hoặc các địa điểm khác nhau. Khi một Pool được lựa chọn tại cấp độ Wide IP, F5 BIG-IP DNS tiếp tục thực hiện lựa chọn Virtual Server phù hợp trong Pool đó để trả về địa chỉ IP tương ứng cho truy vấn DNS.
+
+Các phương thức phân phối truy vấn tại cấp độ Pool bao gồm:
+
+**Round Robin**
+
+Phân phối các truy vấn DNS lần lượt giữa các Virtual Server trong cùng một Pool theo thứ tự luân phiên. Phương thức này giúp phân phối truy vấn tương đối đồng đều giữa các máy chủ đang khả dụng, phù hợp với hệ thống có các máy chủ sở hữu năng lực xử lý tương đương và cùng tham gia cung cấp một dịch vụ.
+
+**Ratio**
+
+Phân phối truy vấn DNS giữa các Virtual Server dựa trên tỷ trọng được quản trị viên cấu hình. Mỗi máy chủ được gán một giá trị Ratio tương ứng với năng lực xử lý hoặc mức độ ưu tiên phân phối. Hệ thống căn cứ vào các giá trị này để lựa chọn máy chủ, giúp phân phối truy vấn phù hợp với năng lực của từng thành phần trong hệ thống.
+
+**Global Availability**
+
+Phân phối truy vấn DNS theo thứ tự ưu tiên được cấu hình sẵn cho các Virtual Server trong Pool. F5 BIG-IP DNS ưu tiên lựa chọn Virtual Server đầu tiên còn khả dụng trong danh sách. Khi máy chủ được ưu tiên không còn đáp ứng điều kiện phục vụ, hệ thống chuyển sang máy chủ tiếp theo.
+
+Phương thức này phù hợp với mô hình máy chủ chính và máy chủ dự phòng, giúp đảm bảo khả năng duy trì dịch vụ khi xảy ra sự cố.
+
+**Topology**
+
+Phân phối truy vấn DNS dựa trên các tiêu chí do quản trị viên định nghĩa, chẳng hạn vị trí địa lý hoặc dải địa chỉ mạng nguồn của Client. F5 BIG-IP DNS đối chiếu thông tin nguồn truy vấn với các quy tắc Topology đã cấu hình để lựa chọn Virtual Server phù hợp.
+
+Phương thức này giúp tối ưu hóa việc lựa chọn máy chủ theo khu vực truy cập, nâng cao hiệu năng và trải nghiệm người dùng.
+
+**Static Persist**
+
+Phân phối truy vấn DNS dựa trên cơ chế Hash, sử dụng địa chỉ IP nguồn của Local DNS (LDNS) kết hợp với Persist Mask để xác định thứ tự lựa chọn Virtual Server.
+
+Nhờ đó, các truy vấn đến từ cùng một LDNS thường được phân giải về cùng một Virtual Server, giúp duy trì tính nhất quán trong việc lựa chọn địa chỉ dịch vụ.
+
+Khi Virtual Server đang được lựa chọn gặp sự cố, hệ thống có thể chuyển sang Virtual Server khác còn khả dụng và tiếp tục ưu tiên máy chủ ban đầu khi máy chủ này phục hồi.
+
+**Drop Packet**
+
+Cho phép F5 BIG-IP DNS loại bỏ truy vấn DNS mà không gửi phản hồi về phía Client. Phương thức này có thể được sử dụng trong trường hợp quản trị viên muốn ngăn hệ thống trả về địa chỉ IP của một Virtual Server có nguy cơ không khả dụng hoặc không đáp ứng yêu cầu phục vụ.
+
+Đây là một lựa chọn xử lý truy vấn thay thế, không phải phương thức phân phối tải thông thường.
+
+**Fallback IP**
+
+Cho phép F5 BIG-IP DNS trả về một địa chỉ IP dự phòng được chỉ định trước khi các phương thức lựa chọn ưu tiên và thay thế không tìm được Virtual Server khả dụng.
+
+Địa chỉ IP này được cấu hình làm địa chỉ dự phòng cuối cùng, hỗ trợ duy trì khả năng phản hồi DNS trong các tình huống hệ thống chính gặp sự cố. Phương thức này phù hợp với các hệ thống có yêu cầu chuyển hướng đến địa điểm Disaster Recovery hoặc địa chỉ dịch vụ dự phòng.
+
+**Return to DNS**
+
+Cho phép F5 BIG-IP DNS chuyển quá trình xử lý truy vấn về hệ thống DNS để tiếp tục thực hiện bước phân giải tiếp theo, thay vì tiếp tục lựa chọn Virtual Server trong Pool theo phương thức hiện tại.
+
+Phương thức này có thể được sử dụng khi cần đưa một Pool tạm thời ra khỏi quá trình phục vụ hoặc giới hạn số lần thử lựa chọn Pool trong quá trình xử lý truy vấn DNS.
+
+**Bảng tổng hợp các phương thức phân phối truy vấn tại cấp độ Pool**
+
+| STT | Phương thức | Nguyên lý hoạt động | Mục đích sử dụng |
+|---|---|---|---|
+| 1 | Round Robin | Phân phối luân phiên giữa các Virtual Server | Cân bằng truy vấn đồng đều |
+| 2 | Ratio | Phân phối theo tỷ trọng cấu hình | Tối ưu sử dụng tài nguyên |
+| 3 | Global Availability | Lựa chọn theo thứ tự ưu tiên | Máy chủ chính và dự phòng |
+| 4 | Topology | Lựa chọn theo tiêu chí mạng/vị trí | Tối ưu truy cập theo khu vực |
+| 5 | Static Persist | Lựa chọn theo cơ chế Hash | Duy trì tính nhất quán trong phân giải DNS |
+| 6 | Drop Packet | Loại bỏ truy vấn, không gửi phản hồi | Ngăn trả về địa chỉ không mong muốn |
+| 7 | Fallback IP | Trả về địa chỉ IP dự phòng | Xử lý tình huống dự phòng cuối cùng |
+| 8 | Return to DNS | Chuyển về bước xử lý DNS tiếp theo | Điều khiển luồng xử lý truy vấn |
+
+**Mối quan hệ giữa Wide IP-Level và Pool-Level**
+
+Hai cấp độ phân phối truy vấn hoạt động phối hợp với nhau trong quá trình xử lý DNS:
+
+- **Wide IP-Level:** Thực hiện lựa chọn Pool phù hợp trong số các Pool được liên kết với tên miền dịch vụ.
+- **Pool-Level:** Thực hiện lựa chọn Virtual Server bên trong Pool đã được lựa chọn.
+- **Kết quả:** F5 BIG-IP DNS trả về địa chỉ IP của Virtual Server được lựa chọn trong phản hồi DNS.
+
+Việc kết hợp hai cấp độ cho phép triển khai linh hoạt các mô hình cân bằng tải và dự phòng giữa nhiều Data Center, đồng thời tối ưu việc phân phối truy vấn đến các máy chủ cung cấp dịch vụ.
 ## MỤC ĐÍCH
 ## PHẠM VI
 ### Phạm vi thử nghiệm
